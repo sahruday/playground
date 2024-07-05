@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "561834015754",
+    "project_id": "playground-sahu",
+    "storage_bucket": "playground-sahu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561834015754:android:1a4a3b11c6167a1827b3f3",
+        "android_client_info": {
+          "package_name": "com.sahu.playground"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHvhqCBm9ISfa5vRnpQ-M5SEQiBlv0DD0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
