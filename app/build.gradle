@@ -6,6 +6,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id("com.google.gms.google-services")
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -95,11 +96,12 @@ dependencies {
     implementation libs.play.services.location
 
     //Firebase
-//    implementation platform(libs.firebase.bom)
-//    implementation libs.firebase.crashlytics
-//    implementation libs.google.firebase.analytics
-//    implementation(libs.firebase.config)
-//    implementation(libs.firebase.inappmessaging)
-//    implementation(libs.firebase.inappmessaging.display)
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.crashlytics
+    implementation libs.google.firebase.analytics
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.inappmessaging)
+    implementation(libs.firebase.inappmessaging.display)
+    implementation libs.firebase.messaging.ktx
 //    implementation(libs.firebase.dynamic.module.support)
 }
