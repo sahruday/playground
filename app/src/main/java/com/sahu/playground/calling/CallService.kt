@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.media.MediaPlayer
+import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.IBinder
@@ -14,6 +15,8 @@ import androidx.core.app.Person
 import com.sahu.playground.R
 import com.sahu.playground.appUtil.NotificationChannelManager
 import com.sahu.playground.appUtil.PhoneController
+import com.sahu.playground.calling.CallReceiver.Companion.ANSWER_CALL
+import com.sahu.playground.calling.CallReceiver.Companion.REJECT_CALL
 
 
 class CallService: Service() {
@@ -23,6 +26,7 @@ class CallService: Service() {
     }
 
     private var mediaPlayer: MediaPlayer? = null
+    private var ringtone: Ringtone? = null
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -35,7 +39,7 @@ class CallService: Service() {
 
     private fun createIncomingCallNotification(callerName: String, callerNumber: String) : Notification{
         val answerIntent = Intent(this, CallReceiver::class.java).apply {
-            action = "ANSWER_CALL"
+            action = ANSWER_CALL
         }
         val answerPendingIntent = PendingIntent.getBroadcast(
             this,
@@ -45,7 +49,7 @@ class CallService: Service() {
         )
 
         val rejectIntent = Intent(this, CallReceiver::class.java).apply {
-            action = "REJECT_CALL"
+            action = REJECT_CALL
         }
         val rejectPendingIntent = PendingIntent.getBroadcast(
             this,
@@ -96,14 +100,14 @@ class CallService: Service() {
     }
 
     private fun startRingtone() {
-        val ringtone = RingtoneManager.getRingtone(applicationContext, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
-        ringtone.isLooping = true
-        ringtone.play()
+        ringtone = RingtoneManager.getRingtone(applicationContext, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
+        ringtone?.isLooping = true
+        ringtone?.play()
 
     }
 
     private fun stopRingtone() {
-        RingtoneManager.getRingtone(applicationContext, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)).stop()
+        ringtone?.stop()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
