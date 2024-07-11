@@ -22,7 +22,7 @@ import com.sahu.playground.calling.CallReceiver.Companion.REJECT_CALL
 class CallService: Service() {
     companion object{
         const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
-        const val RINGING_DURATION = 30L// * 1000L
+        const val RINGING_DURATION = 30L * 1000L
     }
 
     private var mediaPlayer: MediaPlayer? = null
@@ -84,6 +84,7 @@ class CallService: Service() {
                     answerPendingIntent,
                 )
             )
+            .setOngoing(true)
             .setTimeoutAfter(RINGING_DURATION)
             .setContentIntent(resultIntent)
             .build()
