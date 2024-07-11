@@ -1,10 +1,12 @@
 package com.sahu.playground.calling
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import com.sahu.playground.appUtil.PhoneController
 
 class CallReceiver: BroadcastReceiver() {
     companion object{
@@ -13,6 +15,7 @@ class CallReceiver: BroadcastReceiver() {
         const val ANSWER_CALL = "ANSWER_CALL"
         const val REJECT_CALL = "REJECT_CALL"
     }
+
     override fun onReceive(context: Context, intent: Intent?) {
         Log.i(TAG, "action received $intent")
         when (intent?.action) {
@@ -29,9 +32,13 @@ class CallReceiver: BroadcastReceiver() {
         }
 
        context.stopOngoingCallService()
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(2)
+        PhoneController.stopVibration(PhoneController.getVibrator(context))
+//        ringtone.stop()
     }
 
     private fun openCallingActivity(context: Context, action: String? = null) {
+        Log.i(TAG, "Starting Calling Activity")
         val callActivityIntent = Intent(context, CallingActivity::class.java).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
             setAction(Intent.ACTION_MAIN)

@@ -4,10 +4,8 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.media.MediaPlayer
 import android.media.Ringtone
 import android.media.RingtoneManager
-import android.os.Build
 import android.os.IBinder
 import android.os.Vibrator
 import androidx.core.app.NotificationCompat
@@ -22,10 +20,9 @@ import com.sahu.playground.calling.CallReceiver.Companion.REJECT_CALL
 class CallService: Service() {
     companion object{
         const val ACTION_STOP_SERVICE = "ACTION_STOP_SERVICE"
-        const val RINGING_DURATION = 30L// * 1000L
+        const val RINGING_DURATION = 30L * 1000L
     }
 
-    private var mediaPlayer: MediaPlayer? = null
     private var ringtone: Ringtone? = null
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -41,33 +38,19 @@ class CallService: Service() {
         val answerIntent = Intent(this, CallReceiver::class.java).apply {
             action = ANSWER_CALL
         }
-        val answerPendingIntent = PendingIntent.getBroadcast(
-            this,
-            0,
-            answerIntent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val answerPendingIntent = PendingIntent.getBroadcast(this, 0, answerIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val rejectIntent = Intent(this, CallReceiver::class.java).apply {
             action = REJECT_CALL
         }
-        val rejectPendingIntent = PendingIntent.getBroadcast(
-            this,
-            0,
-            rejectIntent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val rejectPendingIntent = PendingIntent.getBroadcast(this, 0, rejectIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val notificationIntent = Intent(applicationContext, CallingActivity::class.java)
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
         notificationIntent.setAction(Intent.ACTION_MAIN)
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
-        val resultIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
-        } else {
-            PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
+        val resultIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val person = Person.Builder()
             .setName(callerName)
@@ -84,6 +67,7 @@ class CallService: Service() {
                     answerPendingIntent,
                 )
             )
+            .setOngoing(true)
             .setTimeoutAfter(RINGING_DURATION)
             .setContentIntent(resultIntent)
             .build()
@@ -102,6 +86,8 @@ class CallService: Service() {
     private fun startRingtone() {
         ringtone = RingtoneManager.getRingtone(applicationContext, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
         ringtone?.isLooping = true
+        if(ringtone?.isPlaying == true)
+            stopRingtone()
         ringtone?.play()
 
     }
@@ -115,15 +101,15 @@ class CallService: Service() {
             ACTION_STOP_SERVICE -> {
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
-                stopRingtone()
-                stopVibrate()
+//                stopRingtone()
+//                stopVibrate()
             }
             else -> {
                 val callerName = intent?.getStringExtra("caller_name") ?: "Unknown Caller"
                 val callerNumber = intent?.getStringExtra("caller_number") ?: "Unknown Number"
                 startForeground(1, createIncomingCallNotification(callerName, callerNumber))
-                startRingtone()
-                startVibrate()
+//                startRingtone()
+//                startVibrate()
             }
         }
         return START_NOT_STICKY
@@ -131,8 +117,8 @@ class CallService: Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        stopRingtone()
-        stopVibrate()
+//        stopRingtone()
+//        stopVibrate()
     }
 
 }

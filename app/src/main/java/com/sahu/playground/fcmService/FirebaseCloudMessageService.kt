@@ -2,27 +2,31 @@ package com.sahu.playground.fcmService
 
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
-import android.media.RingtoneManager
-import android.os.Build
+import android.media.Ringtone
 import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.app.Person
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.sahu.playground.MainActivity
 import com.sahu.playground.R
 import com.sahu.playground.appUtil.NotificationChannelManager
+import com.sahu.playground.calling.CallReceiver
 import com.sahu.playground.calling.CallService
 import com.sahu.playground.calling.CallingActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class FirebaseCloudMessageService: FirebaseMessagingService() {
 
     companion object{
         const val TAG = "FCM Service"
     }
+
+    @Inject
+    lateinit var ringtone: Ringtone
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -46,7 +50,7 @@ class FirebaseCloudMessageService: FirebaseMessagingService() {
         if(dataPayLoad.getOrDefault("type", "Calling") == "Calling") {
             showCallNotification(dataPayLoad, extras)
         } else {
-            showNotification(dataPayLoad, extras)
+//            showNotification(dataPayLoad, extras)
         }
     }
 
@@ -62,54 +66,55 @@ class FirebaseCloudMessageService: FirebaseMessagingService() {
         try {
             startForegroundService(serviceIntent)
         }catch (e: Exception) {
-            Log.i(TAG, "App is in the background, starting activity")
-            val callActivityIntent = Intent(this, CallingActivity::class.java).apply {
-                putExtra("caller_name", name)
-                putExtra("caller_number", number)
-                addCategory(Intent.CATEGORY_LAUNCHER)
-                setAction(Intent.ACTION_MAIN)
-                setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            startActivity(callActivityIntent)
+            showNotification(dataPayLoad, extras)
         }
     }
-
 
     private fun showNotification(
         dataPayLoad: Map<String, String>,
         extras: Bundle
     ) {
-        val channelID = NotificationChannelManager.MISCELLANEOUS
-
-        val title = if (dataPayLoad.containsKey("title")) dataPayLoad["title"] else "title"
-        val body = if (dataPayLoad.containsKey("body")) dataPayLoad["body"] else "body"
+        val title = if (dataPayLoad.containsKey("name")) dataPayLoad["name"] else "Unknown Caller"
+        val body = if (dataPayLoad.containsKey("number")) dataPayLoad["number"] else "Unknow Number"
 
 
-        val notificationIntent = Intent(applicationContext, MainActivity::class.java)
+        val notificationIntent = Intent(applicationContext, CallingActivity::class.java)
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
         notificationIntent.setAction(Intent.ACTION_MAIN)
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         notificationIntent.putExtras(extras)
 
-        val resultIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
-        } else {
-                PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val resultIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
+
+        val answerIntent = Intent(this, CallReceiver::class.java).apply {
+            action = CallReceiver.ANSWER_CALL
         }
+        val answerPendingIntent = PendingIntent.getBroadcast(this, 0, answerIntent, PendingIntent.FLAG_IMMUTABLE)
 
+        val rejectIntent = Intent(this, CallReceiver::class.java).apply {
+            action = CallReceiver.REJECT_CALL
+        }
+        val rejectPendingIntent = PendingIntent.getBroadcast(this, 0, rejectIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-        val mBuilder: NotificationCompat.Builder =
-            NotificationCompat.Builder(applicationContext, channelID)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setAutoCancel(false)
-                .setSound(defaultSoundUri)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(resultIntent)
-        val mNotificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        mNotificationManager.notify(0, mBuilder.build())
+        val person = Person.Builder()
+            .setName(title)
+            .build()
+
+        val mBuilder = NotificationCompat.Builder(this, NotificationChannelManager.CALLING)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Incoming call")
+            .setContentText("In-coming call from $body")
+            .setStyle(
+                NotificationCompat.CallStyle.forIncomingCall(
+                    person,
+                    rejectPendingIntent,
+                    answerPendingIntent,
+                )
+            )
+            .setTimeoutAfter(CallService.RINGING_DURATION)
+            .setFullScreenIntent(resultIntent, true)
+
+        val mNotificationManager = getSystemService(NotificationManager::class.java)
+        mNotificationManager.notify(2, mBuilder.build())
     }
 }
