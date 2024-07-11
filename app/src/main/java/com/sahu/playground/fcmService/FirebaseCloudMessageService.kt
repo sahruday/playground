@@ -1,23 +1,20 @@
 package com.sahu.playground.fcmService
 
 import android.app.NotificationManager
-import android.app.NotificationManager.Policy.PRIORITY_SENDERS_ANY
 import android.app.PendingIntent
 import android.content.Intent
 import android.media.Ringtone
 import android.os.Bundle
-import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.Person
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.sahu.playground.MainActivity
 import com.sahu.playground.R
 import com.sahu.playground.appUtil.NotificationChannelManager
-import com.sahu.playground.appUtil.PhoneController
 import com.sahu.playground.calling.CallReceiver
 import com.sahu.playground.calling.CallService
+import com.sahu.playground.calling.CallingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -66,34 +63,12 @@ class FirebaseCloudMessageService: FirebaseMessagingService() {
             putExtra("caller_name", name)
             putExtra("caller_number", number)
         }
-//        try {
-//            startForegroundService(serviceIntent)
-//        }catch (e: Exception) {
-            startRingtone()
-            startVibrate()
+        try {
+            startForegroundService(serviceIntent)
+        }catch (e: Exception) {
             showNotification(dataPayLoad, extras)
-//        }
+        }
     }
-
-    private fun startVibrate() {
-        val v: Vibrator = PhoneController.getVibrator(applicationContext)
-        PhoneController.startVibration(v)
-    }
-
-    private fun stopVibrate() {
-        val v: Vibrator = PhoneController.getVibrator(applicationContext)
-        PhoneController.stopVibration(v)
-    }
-
-    private fun startRingtone() {
-        ringtone.play()
-
-    }
-
-    private fun stopRingtone() {
-        ringtone.stop()
-    }
-
 
     private fun showNotification(
         dataPayLoad: Map<String, String>,
@@ -103,7 +78,7 @@ class FirebaseCloudMessageService: FirebaseMessagingService() {
         val body = if (dataPayLoad.containsKey("number")) dataPayLoad["number"] else "Unknow Number"
 
 
-        val notificationIntent = Intent(applicationContext, MainActivity::class.java)
+        val notificationIntent = Intent(applicationContext, CallingActivity::class.java)
         notificationIntent.addCategory(Intent.CATEGORY_LAUNCHER)
         notificationIntent.setAction(Intent.ACTION_MAIN)
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -136,8 +111,6 @@ class FirebaseCloudMessageService: FirebaseMessagingService() {
                     answerPendingIntent,
                 )
             )
-//            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE), STREAM_RING)
-//            .setVibrate(longArrayOf(0L, 100L, 0L, 100L))
             .setTimeoutAfter(CallService.RINGING_DURATION)
             .setFullScreenIntent(resultIntent, true)
 

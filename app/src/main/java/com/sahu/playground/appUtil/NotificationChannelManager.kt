@@ -25,15 +25,15 @@ object NotificationChannelManager {
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
             description = "This is used for calling notification"
-            enableVibration(true)
-            setSound(
-                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-                    .build()
-            )
-            vibrationPattern = longArrayOf(0, 1000, 500, 1000)
+//            enableVibration(true)
+//            setSound(
+//                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE),
+//                AudioAttributes.Builder()
+//                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+//                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+//                    .build()
+//            )
+//            vibrationPattern = longArrayOf(0, 1000, 500, 1000)
             lockscreenVisibility = Notification.VISIBILITY_PUBLIC
         }
         val notificationManager = context.getSystemService(Application.NOTIFICATION_SERVICE) as NotificationManager

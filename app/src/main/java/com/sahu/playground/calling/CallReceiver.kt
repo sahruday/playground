@@ -4,14 +4,10 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.Ringtone
 import android.util.Log
 import android.widget.Toast
 import com.sahu.playground.appUtil.PhoneController
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class CallReceiver: BroadcastReceiver() {
     companion object{
         const val TAG = "Call Receiver"
@@ -19,9 +15,6 @@ class CallReceiver: BroadcastReceiver() {
         const val ANSWER_CALL = "ANSWER_CALL"
         const val REJECT_CALL = "REJECT_CALL"
     }
-
-    @Inject
-    lateinit var ringtone: Ringtone
 
     override fun onReceive(context: Context, intent: Intent?) {
         Log.i(TAG, "action received $intent")
@@ -38,13 +31,14 @@ class CallReceiver: BroadcastReceiver() {
             }
         }
 
-//       context.stopOngoingCallService()
+       context.stopOngoingCallService()
         (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(2)
         PhoneController.stopVibration(PhoneController.getVibrator(context))
-        ringtone.stop()
+//        ringtone.stop()
     }
 
     private fun openCallingActivity(context: Context, action: String? = null) {
+        Log.i(TAG, "Starting Calling Activity")
         val callActivityIntent = Intent(context, CallingActivity::class.java).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
             setAction(Intent.ACTION_MAIN)
