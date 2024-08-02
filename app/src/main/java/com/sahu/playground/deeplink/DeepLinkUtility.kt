@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import com.sahu.playground.animations.CustomAnimation
 import com.sahu.playground.rootDetection.RootDetection
 import com.sahu.playground.docUpload.FilePickerActivity
 import com.sahu.playground.location.LocationActivity
@@ -29,6 +30,11 @@ object DeepLinkUtility {
                 LocationActivity.DEEPLINK_PATH -> {
                     val locationActivityIntent = Intent(activity, LocationActivity::class.java)
                     activity.startActivity(locationActivityIntent)
+                }
+
+                CustomAnimation.DEEPLINK_PATH -> {
+                    val customAnimationIntent = Intent(activity, CustomAnimation::class.java)
+                    activity.startActivity(customAnimationIntent)
                 }
 
                 else ->

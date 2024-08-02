@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.sahu.playground.animations.CustomAnimation
 import com.sahu.playground.appUtil.BaseActivity
 import com.sahu.playground.deeplink.DeepLinkActivity
 import com.sahu.playground.deeplink.DeepLinkUtility
@@ -135,8 +136,9 @@ class MainActivity : BaseActivity() {
             DeepLinkActivity.DEEPLINK_PREFIX + FilePickerActivity.DEEPLINK_PATH
         )
         private val Testing = Option("Test toast", DeepLinkActivity.DEEPLINK_PREFIX + "testing")
+        private val Animations = Option("Animations", DeepLinkActivity.DEEPLINK_PREFIX + CustomAnimation.DEEPLINK_PATH)
 
-        val options = listOf(RootDetector, Location, FileChooser, Testing)
+        val options = listOf(RootDetector, Location, FileChooser, Testing, Animations)
     }
 }
 
