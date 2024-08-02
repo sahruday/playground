@@ -1,7 +1,7 @@
 [versions]
 agp = "8.3.1"
 coreSplashscreen = "1.2.0-alpha01"
-firebaseBom = "33.1.0"
+firebaseBom = "33.1.1"
 googleServices = "4.4.2"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
@@ -17,11 +17,12 @@ retrofit = "2.9.0"
 roomKtx = "2.6.1"
 appcompat = "1.7.0"
 secretsGradlePlugin = "2.0.1"
+firebaseMessagingKtx = "24.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
-firebase-bom = { module = "com.google.firebase:firebase-bom", version = 'firebaseBom' }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics"}#, version = "18.3.7"}
 firebase-dynamic-module-support = { module = "com.google.firebase:firebase-dynamic-module-support" }
@@ -51,6 +52,7 @@ converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
+firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessagingKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

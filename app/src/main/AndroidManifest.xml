@@ -23,6 +23,13 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- Notification permission -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+
     <application
         android:name=".Playground"
         android:allowBackup="true"
@@ -70,10 +77,46 @@
                 <data android:host="playground.sahu.com" />
             </intent-filter>
         </activity>
+        
+        <activity android:name=".calling.CallingActivity"
+            android:exported="true"
+            android:showOnLockScreen="true"/>
 
         <meta-data
             android:name="com.sahu.playground.ManifestTestKey"
             android:value="Testing key in manifest file" />
+
+        <service
+            android:name=".fcmService.FirebaseCloudMessageService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher_foreground" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/black" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="Miscellaneous"/>
+
+
+        <service android:name=".calling.CallService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse"
+            />
+
+        <receiver android:name=".calling.CallReceiver" />
 
     </application>
 
