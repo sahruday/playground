@@ -1,7 +1,9 @@
 package com.sahu.playground.stories
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.sahu.playground.data.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -25,8 +27,8 @@ class StoriesVM @Inject constructor(
     private val _state = MutableStateFlow<State>(LOADING)
     val state = _state.asStateFlow()
 
-    data class CurrentStoryIndex(val userStoryIndex: Int = -1, val storyIndex: Int = 0)
-    val detailedStoryIndex = MutableStateFlow(CurrentStoryIndex())
+    val detailedUserStoryIndex = MutableStateFlow(-1)
+    val detailedStoryIndex = MutableStateFlow(0)
 
     init {
         getStories()
@@ -52,36 +54,32 @@ class StoriesVM @Inject constructor(
         }
     }
 
-    fun nextStory() {
+    fun nextStory(currentUserStoryIndex: Int) {
         val userStories = (state.value as SUCCESS).stories
-        if(detailedStoryIndex.value.storyIndex < userStories[detailedStoryIndex.value.userStoryIndex].stories.lastIndex) {
-            detailedStoryIndex.value = detailedStoryIndex.value.copy(storyIndex = detailedStoryIndex.value.storyIndex+1)
-        }
-        else if(detailedStoryIndex.value.storyIndex == userStories[detailedStoryIndex.value.userStoryIndex].stories.lastIndex) {
-            if(detailedStoryIndex.value.userStoryIndex < userStories.lastIndex) nextUser()
-            else detailedStoryIndex.value = CurrentStoryIndex()
-        }
+        val lastIndex = userStories[currentUserStoryIndex].stories.lastIndex
+        if(detailedStoryIndex.value in 0 until lastIndex)
+            detailedStoryIndex.value++
+        else if( detailedStoryIndex.value == lastIndex)
+            if(detailedUserStoryIndex.value < userStories.lastIndex) nextUser(currentUserStoryIndex)
+            else detailedUserStoryIndex.value = -1 //Close
+        Log.d("TAG", "nextStory: ${detailedUserStoryIndex.value}${detailedStoryIndex.value}")
     }
 
-    fun nextUser() {
+    fun nextUser(currentUserStoryIndex: Int) {
         val userStories = (state.value as SUCCESS).stories
-        if(detailedStoryIndex.value.userStoryIndex < userStories.lastIndex) {
-            detailedStoryIndex.value = CurrentStoryIndex(userStoryIndex = detailedStoryIndex.value.userStoryIndex+1)
+        if(currentUserStoryIndex < userStories.lastIndex) {
+            detailedUserStoryIndex.value = currentUserStoryIndex+1
+            detailedStoryIndex.value = 0
         }
     }
 
-    fun prevStory() {
-        if(detailedStoryIndex.value.storyIndex > 0) {
-            detailedStoryIndex.value = detailedStoryIndex.value.copy(storyIndex = detailedStoryIndex.value.storyIndex-1)
-        }
-        else if(detailedStoryIndex.value.storyIndex == 0)
-            prevUser()
+    fun prevStory(currentUserStoryIndex: Int) {
+        if(detailedStoryIndex.value > 0) detailedStoryIndex.value--
+        else if(detailedStoryIndex.value == 0) prevUser(currentUserStoryIndex)
     }
 
-    fun prevUser() {
-        if(detailedStoryIndex.value.userStoryIndex > 0) {
-            detailedStoryIndex.value = CurrentStoryIndex(userStoryIndex = detailedStoryIndex.value.userStoryIndex-1)
-        }
+    fun prevUser(currentUserStoryIndex: Int) {
+        if(currentUserStoryIndex > 0) detailedUserStoryIndex.value = currentUserStoryIndex-1
     }
 
     companion object {
