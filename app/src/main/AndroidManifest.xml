@@ -85,6 +85,9 @@
         <activity android:name=".animations.CustomAnimation"
             android:exported="false" />
 
+        <activity android:name=".stories.StoriesActivity"
+            android:exported="true"/>
+
         <meta-data
             android:name="com.sahu.playground.ManifestTestKey"
             android:value="Testing key in manifest file" />

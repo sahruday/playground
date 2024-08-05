@@ -8,6 +8,7 @@ import com.sahu.playground.animations.CustomAnimation
 import com.sahu.playground.rootDetection.RootDetection
 import com.sahu.playground.docUpload.FilePickerActivity
 import com.sahu.playground.location.LocationActivity
+import com.sahu.playground.stories.StoriesActivity
 
 object DeepLinkUtility {
 
@@ -35,6 +36,11 @@ object DeepLinkUtility {
                 CustomAnimation.DEEPLINK_PATH -> {
                     val customAnimationIntent = Intent(activity, CustomAnimation::class.java)
                     activity.startActivity(customAnimationIntent)
+                }
+
+                StoriesActivity.DEEPLINK_PATH -> {
+                    val storiesActivityIntent = Intent(activity, StoriesActivity::class.java)
+                    activity.startActivity(storiesActivityIntent)
                 }
 
                 else ->

@@ -23,7 +23,7 @@ object NetworkModule {
     @Singleton
     fun provideFilmService(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("")//TODO Base url
+            .baseUrl("https://mpedaabd2792d6312acc.free.beeceptor.com")//TODO Base url
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(client)
             .build()
@@ -46,7 +46,7 @@ object NetworkModule {
     private fun createAuthInterceptor(resources: Resources): Interceptor {
         return Interceptor { chain ->
             //TODO add token
-            val updatedUrl = chain.request().url()
+            val updatedUrl = chain.request().url
 //                .newBuilder()
 //                .build()
             chain.proceed(

@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.1"
+coilComposeVersion = "2.7.0"
 coreSplashscreen = "1.2.0-alpha01"
 firebaseBom = "33.1.1"
 googleServices = "4.4.2"
@@ -22,6 +23,7 @@ firebaseMessagingKtx = "24.0.0"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-config = { module = "com.google.firebase:firebase-config" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics"}#, version = "18.3.7"}
