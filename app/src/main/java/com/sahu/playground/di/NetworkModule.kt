@@ -23,7 +23,7 @@ object NetworkModule {
     @Singleton
     fun provideFilmService(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("")//TODO Base url
+            .baseUrl("https://mpedaabd2792d6312acc.free.beeceptor.com")//TODO Base url
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(client)
             .build()

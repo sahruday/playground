@@ -2,15 +2,20 @@ package com.sahu.playground.stories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
+import com.sahu.playground.data.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import javax.inject.Inject
 
-class StoriesVM : ViewModel() {
+@HiltViewModel
+class StoriesVM @Inject constructor(
+    private val repo : Repository
+) : ViewModel() {
 
     sealed interface State
     data object LOADING : State
@@ -33,9 +38,17 @@ class StoriesVM : ViewModel() {
             _state.value = LOADING
             delay(1000)
 
-            val gson = Gson()
-            val storiesResponse = gson.fromJson(successResponse, StoriesResponse::class.java)
-            _state.value = SUCCESS(storiesResponse.data)
+            val successResponse = repo.getData()
+            try {
+                _state.value = SUCCESS(successResponse.data)
+            } catch (e: Exception) {
+                _state.value = ERROR(e.message ?: "Something went wrong")
+            }
+
+//            val gson = Gson()
+//            println(successResponse)
+//            val storiesResponse = gson.fromJson(successResponse, StoriesResponse::class.java)
+//            _state.value = SUCCESS(storiesResponse.data)
         }
     }
 

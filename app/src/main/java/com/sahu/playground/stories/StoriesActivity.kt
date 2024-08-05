@@ -68,7 +68,9 @@ import coil.compose.rememberAsyncImagePainter
 import com.sahu.playground.R
 import com.sahu.playground.appUtil.BaseActivity
 import com.sahu.playground.commonCompose.StepProgressIndicator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class StoriesActivity : BaseActivity() {
 
     companion object {
