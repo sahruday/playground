@@ -46,7 +46,7 @@ object NetworkModule {
     private fun createAuthInterceptor(resources: Resources): Interceptor {
         return Interceptor { chain ->
             //TODO add token
-            val updatedUrl = chain.request().url()
+            val updatedUrl = chain.request().url
 //                .newBuilder()
 //                .build()
             chain.proceed(

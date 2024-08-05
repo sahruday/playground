@@ -37,6 +37,7 @@ import com.sahu.playground.deeplink.DeepLinkUtility
 import com.sahu.playground.docUpload.FilePickerActivity
 import com.sahu.playground.location.LocationActivity
 import com.sahu.playground.rootDetection.RootDetection
+import com.sahu.playground.stories.StoriesActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -137,8 +138,9 @@ class MainActivity : BaseActivity() {
         )
         private val Testing = Option("Test toast", DeepLinkActivity.DEEPLINK_PREFIX + "testing")
         private val Animations = Option("Animations", DeepLinkActivity.DEEPLINK_PREFIX + CustomAnimation.DEEPLINK_PATH)
+        private val Stories = Option("Stories", DeepLinkActivity.DEEPLINK_PREFIX + StoriesActivity.DEEPLINK_PATH)
 
-        val options = listOf(RootDetector, Location, FileChooser, Testing, Animations)
+        val options = listOf(RootDetector, Location, FileChooser, Testing, Animations, Stories)
     }
 }
 

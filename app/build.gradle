@@ -104,4 +104,7 @@ dependencies {
     implementation(libs.firebase.inappmessaging.display)
     implementation libs.firebase.messaging.ktx
 //    implementation(libs.firebase.dynamic.module.support)
+
+    //Coil - Image loading lib
+    implementation(libs.coil.kt.coil.compose)
 }
