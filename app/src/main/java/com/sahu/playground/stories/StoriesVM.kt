@@ -40,9 +40,13 @@ class StoriesVM @Inject constructor(
             _state.value = LOADING
             delay(1000)
 
-            val successResponse = repo.getData()
             try {
-                _state.value = SUCCESS(successResponse.data)
+                val successResponse = repo.getData()
+                _state.value = if(successResponse.statusCode == 200) {
+                    SUCCESS(successResponse.data)
+                } else {
+                    ERROR(successResponse.message)
+                }
             } catch (e: Exception) {
                 _state.value = ERROR(e.message ?: "Something went wrong")
             }
@@ -156,7 +160,7 @@ class StoriesVM @Inject constructor(
 
 
             })
-        }.toString()
+        }//.toString()
 
     }
 }
