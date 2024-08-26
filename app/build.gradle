@@ -55,6 +55,9 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -104,4 +107,15 @@ dependencies {
     implementation(libs.firebase.inappmessaging.display)
     implementation libs.firebase.messaging.ktx
 //    implementation(libs.firebase.dynamic.module.support)
+
+    //Coil - Image loading lib
+    implementation(libs.coil.kt.coil.compose)
+
+    //Unit testing
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation libs.androidx.core.testing
+
 }
